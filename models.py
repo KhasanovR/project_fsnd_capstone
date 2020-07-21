@@ -15,13 +15,12 @@ from config import database_setup
 # Database Setup 
 #----------------------------------------------------------------------------#
 
-database_path = "postgres://{}:{}@{}:{}/{}"
-	.format(
+database_path = "postgres://{}:{}@{}:{}/{}".format(
 		database_setup["username"], 
 		database_setup["password"], 
 		database_setup["host"], 
 		database_setup["port"], 
-		database_setup["db_name"]
+		database_setup["dbname"]
 		)
 
 db = SQLAlchemy()
@@ -42,27 +41,27 @@ def db_drop_and_create_all():
 
 def db_init():
 
-	new_actor = (Actor(
-        name = 'Someone',
-        gender = 'Male',
-        age = 23
-        ))
+	new_actor = Actor(
+		name = 'Someone',
+		gender = 'Male',
+		age = 23
+		)
 
-    new_movie = (Movie(
-        title = 'My Udacity FSND Capstone Movie',
-        release_date = date.today()
-        ))
-	
+	new_movie = Movie(
+		title = 'My Udacity FSND Capstone Movie',
+		release_date = date.today()
+		)
+
 	new_performance = Performance.insert().values(
-        Movie_id = new_movie.id,
-        Actor_id = new_actor.id,
-        actor_fee = 750.00
-    )
+		Movie_id = new_movie.id,
+		Actor_id = new_actor.id,
+		actor_fee = 750.00
+		)
 
 	new_actor.insert()
 	new_movie.insert()
-	db.session.execute(new_performance) 
-    db.session.commit()
+	db.session.execute(new_performance)
+	db.session.commit()
 
 # ---------------------------------------------------------------------------- #
 # Performance Many-to-Many Relationship 									   #

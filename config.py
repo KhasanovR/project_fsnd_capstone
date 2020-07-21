@@ -30,5 +30,5 @@ database_setup = {
 	"password": os.environ.get('DB_PASSWORD'),
 	"host": os.environ.get('DB_HOST'),
 	"port": os.environ.get('DB_PORT'),
-	"dbname" os.environ.get('DB_NAME'):
+	"dbname": os.environ.get('DB_NAME')
 }
