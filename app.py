@@ -44,18 +44,40 @@ def create_app(test_config=None):
 
 		return response
 
-	def paginate_questions(request, selection):
+	def paginate_results(request, selection):
 	
 		page = request.args.get('page', 1, type=int)
 
-		start = (page - 1) * QUESTIONS_PER_PAGE
-		end = start + QUESTIONS_PER_PAGE
+		start = (page - 1) * ROWS_PER_PAGE
+		end = start + ROWS_PER_PAGE
 
-		questions = [question.format() for question in selection]
-		current_questions = questions[start:end]
+		selections = [sel.format() for sel in selection]
 
-		return current_questions
-		
+		return selections[start:end]
+
+	# ---------------------------------------------------------------------------- #
+  	# API Endpoints																   #
+  	# ---------------------------------------------------------------------------- #
+	
+	# ---------------------------------------------------------------------------- #
+	# Endpoint /actors GET 														   #
+	# ---------------------------------------------------------------------------- #
+
+	@app.route('/actors', methods=['GET'])
+	@requires_auth('read:actors')
+	def get_actors(payload):
+
+		selection = Actor.query.all()
+		actors_paginated = paginate_results(request, selection)
+
+		if len(actors_paginated) == 0:
+			abort(404, {'message': 'no actors found in database.'})
+
+		return jsonify({
+			'success': True,
+			'actors': actors_paginated
+			})
+
 
 	# ---------------------------------------------------------------------------- #
 	# Error Handlers                                                               #
