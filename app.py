@@ -124,6 +124,44 @@ def create_app(test_config=None):
 	      'created': new_actor.id
 	    })
 
+	# ---------------------------------------------------------------------------- #
+	# Endpoint /actors PATCH	 												   #
+	# ---------------------------------------------------------------------------- #
+
+
+    @app.route('/actors/<actor_id>', methods=['PATCH'])
+    @requires_auth('edit:actors')
+    def edit_actors(payload, actor_id):
+
+    	body = request.get_json()
+
+    	if not actor_id:
+    		abort(400, {'message': 'please append an actor id to the request url.'})
+
+		if not body:
+			abort(400, {'message': 'request does not contain a valid JSON body.'})
+
+		actor_to_update = Actor.query.filter(Actor.id == actor_id).one_or_none()
+
+		if not actor_to_update:
+			abort(404, {'message': 'Actor with id {} not found in database.'.format(actor_id)})
+
+		name = body.get('name', actor_to_update.name)
+		age = body.get('age', actor_to_update.age)
+		gender = body.get('gender', actor_to_update.gender)
+
+		actor_to_update.name = name
+		actor_to_update.age = age
+		actor_to_update.gender = gender
+
+		actor_to_update.update()
+
+		return jsonify({
+			'success': True,
+			'updated': actor_to_update.id,
+			'actor' : [actor_to_update.format()]
+			})
+
 
 	# ---------------------------------------------------------------------------- #
 	# Error Handlers                                                               #
