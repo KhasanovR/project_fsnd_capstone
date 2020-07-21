@@ -247,6 +247,43 @@ def create_app(test_config=None):
 
 
 	# ---------------------------------------------------------------------------- #
+	# Endpoint /movies PATCH		 											   #
+	# ---------------------------------------------------------------------------- #
+
+
+	@app.route('/movies/<movie_id>', methods=['PATCH'])
+	@requires_auth('edit:movies')
+	def edit_movies(payload, movie_id):
+
+		body = request.get_json()
+
+		if not movie_id:
+			abort(400, {'message': 'please append an movie id to the request url.'})
+
+		if not body:
+			abort(400, {'message': 'request does not contain a valid JSON body.'})
+
+		movie_to_update = Movie.query.filter(Movie.id == movie_id).one_or_none()
+
+		if not movie_to_update:
+			abort(404, {'message': 'Movie with id {} not found in database.'.format(movie_id)})
+
+		title = body.get('title', movie_to_update.title)
+		release_date = body.get('release_date', movie_to_update.release_date)
+
+		movie_to_update.title = title
+		movie_to_update.release_date = release_date
+
+		movie_to_update.update()
+
+		return jsonify({
+			'success': True,
+			'edited': movie_to_update.id,
+			'movie' : [movie_to_update.format()]
+			})
+
+
+	# ---------------------------------------------------------------------------- #
 	# Error Handlers                                                               #
 	# ---------------------------------------------------------------------------- #
 	
