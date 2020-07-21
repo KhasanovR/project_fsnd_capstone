@@ -41,12 +41,55 @@ def db_drop_and_create_all():
 
 def db_init():
 
+	new_actor = (Actor(
+        name = 'Someone',
+        gender = 'Male',
+        age = 23
+        ))
+
     new_movie = (Movie(
         title = 'My Udacity FSND Capstone Movie',
         release_date = date.today()
         ))
 	
+	new_actor.insert()
 	new_movie.insert()
+
+# ---------------------------------------------------------------------------- #
+# Actors Model 																   #
+# ---------------------------------------------------------------------------- #
+
+class Actor(db.Model):  
+  __tablename__ = 'actors'
+
+  id = Column(Integer, primary_key=True)
+  name = Column(String)
+  gender = Column(String)
+  age = Column(Integer)
+
+  def __init__(self, name, gender, age):
+    self.name = name
+    self.gender = gender
+    self.age = age
+
+  def insert(self):
+    db.session.add(self)
+    db.session.commit()
+  
+  def update(self):
+    db.session.commit()
+
+  def delete(self):
+    db.session.delete(self)
+    db.session.commit()
+
+  def format(self):
+    return {
+      'id': self.id,
+      'name' : self.name,
+      'gender': self.gender,
+      'age': self.age
+    }
     
 # ---------------------------------------------------------------------------- #
 # Movies Model 																   #
