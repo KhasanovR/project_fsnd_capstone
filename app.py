@@ -55,13 +55,16 @@ def create_app(test_config=None):
 
 		return selections[start:end]
 
+
 	# ---------------------------------------------------------------------------- #
   	# API Endpoints																   #
   	# ---------------------------------------------------------------------------- #
 	
+
 	# ---------------------------------------------------------------------------- #
 	# Endpoint /actors GET 														   #
 	# ---------------------------------------------------------------------------- #
+
 
 	@app.route('/actors', methods=['GET'])
 	@requires_auth('read:actors')
@@ -77,6 +80,49 @@ def create_app(test_config=None):
 			'success': True,
 			'actors': actors_paginated
 			})
+
+
+	# ---------------------------------------------------------------------------- #
+	# Endpoint /actors POST		 												   #
+	# ---------------------------------------------------------------------------- #
+
+	
+	@app.route('/actors', methods=['POST'])
+	@requires_auth('create:actors')
+	def insert_actors(payload):
+
+		body = request.get_json()
+
+		if not body:
+			abort(400, {'message': 'request does not contain a valid JSON body.'})
+
+	    
+	    name = body.get('name', None)
+	    age = body.get('age', None)
+
+	    
+	    gender = body.get('gender', 'Other')
+
+	    
+	    if not name:
+	      abort(422, {'message': 'no name provided.'})
+
+	    if not age:
+	      abort(422, {'message': 'no age provided.'})
+
+	    
+	    new_actor = (Actor(
+	          name = name, 
+	          age = age,
+	          gender = gender
+	          ))
+	    
+	    new_actor.insert()
+
+	    return jsonify({
+	      'success': True,
+	      'created': new_actor.id
+	    })
 
 
 	# ---------------------------------------------------------------------------- #

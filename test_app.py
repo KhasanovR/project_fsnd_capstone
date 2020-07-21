@@ -8,6 +8,19 @@ from config import (
 	)
 
 
+casting_assistant_auth_header = {
+    'Authorization': bearer_tokens['casting_assistant']
+}
+
+casting_director_auth_header = {
+    'Authorization': bearer_tokens['casting_director']
+}
+
+executive_producer_auth_header = {
+    'Authorization': bearer_tokens['executive_producer']
+}
+
+
 # ---------------------------------------------------------------------------- #
 # Setup of Unittest 														   #
 # ---------------------------------------------------------------------------- #
