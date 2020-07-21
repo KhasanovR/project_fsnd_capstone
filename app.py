@@ -111,11 +111,11 @@ def create_app(test_config=None):
 	      abort(422, {'message': 'no age provided.'})
 
 	    
-	    new_actor = (Actor(
+	    new_actor = Actor(
 	          name = name, 
 	          age = age,
 	          gender = gender
-	          ))
+	          )
 	    
 	    new_actor.insert()
 
@@ -208,6 +208,42 @@ def create_app(test_config=None):
   				'success': True,
   				'movies': movies_paginated
   				})
+
+	
+	# ---------------------------------------------------------------------------- #
+	# Endpoint /movies POST		 												   #
+	# ---------------------------------------------------------------------------- #
+
+
+	@app.route('/movies', methods=['POST'])
+	@requires_auth('create:movies')
+	def insert_movies(payload):
+
+		body = request.get_json()
+
+		if not body:
+			abort(400, {'message': 'request does not contain a valid JSON body.'})
+
+		title = body.get('title', None)
+		release_date = body.get('release_date', None)
+
+		if not title:
+			abort(422, {'message': 'no title provided.'})
+
+		if not release_date:
+			abort(422, {'message': 'no "release_date" provided.'})
+
+		new_movie = Movie(
+			title = title,
+			release_date = release_date
+			)
+
+		new_movie.insert()
+
+		return jsonify({
+			'success': True,
+			'created': new_movie.id
+			})
 
 
 	# ---------------------------------------------------------------------------- #
