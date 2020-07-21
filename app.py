@@ -190,6 +190,27 @@ def create_app(test_config=None):
 
 
 	# ---------------------------------------------------------------------------- #
+	# Endpoint /movies GET		 												   #
+	# ---------------------------------------------------------------------------- #
+
+
+	@app.route('/movies', methods=['GET'])
+  	@requires_auth('read:movies')
+  	def get_movies(payload):
+
+  		selection = Movie.query.all()
+  		movies_paginated = paginate_results(request, selection)
+
+  		if len(movies_paginated) == 0:
+  			abort(404, {'message': 'no movies found in database.'})
+
+  			return jsonify({
+  				'success': True,
+  				'movies': movies_paginated
+  				})
+
+
+	# ---------------------------------------------------------------------------- #
 	# Error Handlers                                                               #
 	# ---------------------------------------------------------------------------- #
 	
