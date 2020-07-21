@@ -284,6 +284,31 @@ def create_app(test_config=None):
 
 
 	# ---------------------------------------------------------------------------- #
+	# Endpoint /movies DELETE		 											   #
+	# ---------------------------------------------------------------------------- #
+
+
+	@app.route('/movies/<movie_id>', methods=['DELETE'])
+	@requires_auth('delete:movies')
+	def delete_movies(payload, movie_id):
+
+		if not movie_id:
+			abort(400, {'message': 'please append an movie id to the request url.'})
+
+		movie_to_delete = Movie.query.filter(Movie.id == movie_id).one_or_none()
+
+		if not movie_to_delete:
+			abort(404, {'message': 'Movie with id {} not found in database.'.format(movie_id)})
+
+		movie_to_delete.delete()
+
+		return jsonify({
+			'success': True,
+			'deleted': movie_id
+			})
+
+
+	# ---------------------------------------------------------------------------- #
 	# Error Handlers                                                               #
 	# ---------------------------------------------------------------------------- #
 	
