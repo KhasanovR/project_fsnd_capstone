@@ -124,6 +124,7 @@ def create_app(test_config=None):
 	      'created': new_actor.id
 	    })
 
+
 	# ---------------------------------------------------------------------------- #
 	# Endpoint /actors PATCH	 												   #
 	# ---------------------------------------------------------------------------- #
@@ -160,6 +161,31 @@ def create_app(test_config=None):
 			'success': True,
 			'updated': actor_to_update.id,
 			'actor' : [actor_to_update.format()]
+			})
+
+
+	# ---------------------------------------------------------------------------- #
+	# Endpoint /actors DELETE	 												   #
+	# ---------------------------------------------------------------------------- #
+
+
+	@app.route('/actors/<actor_id>', methods=['DELETE'])
+	@requires_auth('delete:actors')
+	def delete_actors(payload, actor_id):
+
+		if not actor_id:
+			abort(400, {'message': 'please append an actor id to the request url.'})
+
+		actor_to_delete = Actor.query.filter(Actor.id == actor_id).one_or_none()
+
+		if not actor_to_delete:
+			abort(404, {'message': 'Actor with id {} not found in database.'.format(actor_id)})
+
+		actor_to_delete.delete()
+
+		return jsonify({
+			'success': True,
+			'deleted': actor_id
 			})
 
 
