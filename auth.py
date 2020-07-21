@@ -14,7 +14,6 @@ AUTH0_DOMAIN = auth0_config['AUTH0_DOMAIN']
 ALGORITHMS = auth0_config['ALGORITHMS']
 API_AUDIENCE = auth0_config['API_AUDIENCE']
 
-
 # ---------------------------------------------------------------------------- #
 # AuthError Exception                                                          #
 # ---------------------------------------------------------------------------- #
