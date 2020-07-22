@@ -150,6 +150,42 @@ class AgencyTestCase(unittest.TestCase):
         self.assertFalse(data['success'])
         self.assertEqual(data['message'], 'resource not found')
 
+    # ----------------------------------------------------------------------------#
+    # Tests for /actors DELETE
+    # ----------------------------------------------------------------------------#
+
+    def test_error_401_delete_actor(self):
+        res = self.client().delete('/actors/1')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['message'], 'Authorization header is expected.')
+
+    def test_error_403_delete_actor(self):
+        res = self.client().delete('/actors/1', headers=casting_assistant_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['message'], 'Permission not found.')
+
+    def test_delete_actor(self):
+        res = self.client().delete('/actors/1', headers=casting_director_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertEqual(data['deleted'], '2')
+
+    def test_error_404_delete_actor(self):
+        res = self.client().delete('/actors/1234567890', headers=casting_director_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['message'], 'resource not found')
+
 
 if __name__ == "__main__":
     unittest.main()
