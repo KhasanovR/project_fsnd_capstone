@@ -243,6 +243,40 @@ class AgencyTestCase(unittest.TestCase):
         self.assertFalse(data['success'])
         self.assertEqual(data['message'], 'resource not found')
 
+    # ----------------------------------------------------------------------------#
+    # Tests for /movies PATCH
+    # ----------------------------------------------------------------------------#
+
+    def test_edit_movie(self):
+        json_edit_movie = {
+            'release_date': date.today()
+        }
+        res = self.client().patch('/movies/1', json=json_edit_movie, headers=executive_producer_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertTrue(len(data['movie']) > 0)
+
+    def test_error_400_edit_movie(self):
+        res = self.client().patch('/movies/1', headers=executive_producer_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['message'], 'resource not found')
+
+    def test_error_404_edit_movie(self):
+        json_edit_movie = {
+            'release_date': date.today()
+        }
+        res = self.client().patch('/movies/1234567890', json=json_edit_movie, headers=executive_producer_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['message'], 'resource not found')
+
 
 if __name__ == "__main__":
     unittest.main()
