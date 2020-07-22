@@ -12,10 +12,10 @@ from auth import (
 )
 from models import (
     setup_db,
-    db_drop_and_create_all,
+    # db_drop_and_create_all,
     Actor,
     Movie,
-    # Performance
+    Performance
 )
 from config import PAGINATION
 
