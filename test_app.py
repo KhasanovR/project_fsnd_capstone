@@ -114,6 +114,42 @@ class AgencyTestCase(unittest.TestCase):
         self.assertFalse(data['success'])
         self.assertEqual(data['message'], 'resource not found')
 
+    # ----------------------------------------------------------------------------#
+    # Tests for /actors PATCH
+    # ----------------------------------------------------------------------------#
+
+    def test_edit_actor(self):
+        json_edit_actor_with_new_age = {
+            'age': 32
+        }
+        res = self.client().patch('/actors/1', json=json_edit_actor_with_new_age, headers=casting_director_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertTrue(len(data['actor']) > 0)
+        self.assertEqual(data['updated'], 2)
+
+    def test_error_400_edit_actor(self):
+        res = self.client().patch('/actors/1', headers=casting_director_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['message'], 'resource not found')
+
+    def test_error_404_edit_actor(self):
+        json_edit_actor_with_new_age = {
+            'age': 32
+        }
+        res = self.client().patch('/actors/1234567890', json=json_edit_actor_with_new_age,
+                                  headers=casting_director_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['message'], 'resource not found')
+
 
 if __name__ == "__main__":
     unittest.main()
