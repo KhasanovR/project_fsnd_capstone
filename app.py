@@ -17,9 +17,9 @@ from models import (
     Movie,
     Performance
 )
-from config import pagination
+from config import PAGINATION
 
-ROWS_PER_PAGE = pagination['example']
+ROWS_PER_PAGE = int(PAGINATION)
 
 
 def create_app(test_config=None):
@@ -43,16 +43,16 @@ def create_app(test_config=None):
 
         return response
 
-    def paginate_results(req, selection):
-
-        page = req.args.get('page', 1, type=int)
-
-        start = (page - 1) * ROWS_PER_PAGE
+    def paginate_results(request, selection):
+    
+        page = request.args.get('page', 1, type=int)
+        
+        start = (int(page) - 1) * ROWS_PER_PAGE
         end = start + ROWS_PER_PAGE
 
-        selections = [sel.format() for sel in selection]
-
-        return selections[start:end]
+        objects_formatted = [object_name.format() for object_name in selection]
+        
+        return objects_formatted[start:end]
 
     # ---------------------------------------------------------------------------- #
     # API Endpoints																   #
@@ -62,6 +62,12 @@ def create_app(test_config=None):
     # Endpoint /actors GET 														   #
     # ---------------------------------------------------------------------------- #
 
+    @app.route('/', methods=['GET'])
+    def index():
+        return jsonify({
+            "access_token": request.args.get("access_token")
+            })
+    
     @app.route('/actors', methods=['GET'])
     @requires_auth('read:actors')
     def get_actors(payload):
@@ -188,10 +194,10 @@ def create_app(test_config=None):
         if len(movies_paginated) == 0:
             abort(404, {'message': 'no movies found in database.'})
 
-            return jsonify({
-                'success': True,
-                'movies': movies_paginated
-            })
+        return jsonify({
+            'success': True,
+            'movies': movies_paginated
+        })
 
     # ---------------------------------------------------------------------------- #
     # Endpoint /movies POST		 												   #

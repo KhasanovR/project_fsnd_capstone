@@ -7,29 +7,22 @@ from sqlalchemy import (
     Float
 )
 from flask_sqlalchemy import SQLAlchemy
-from config import database_setup
+from config import DATABASE_URL
 
 # ---------------------------------------------------------------------------- #
 # Database Setup                                                               #
 # ---------------------------------------------------------------------------- #
 
-database_path = "postgres://{}:{}@{}:{}/{}".format(
-    database_setup["username"],
-    database_setup["password"],
-    database_setup["host"],
-    database_setup["port"],
-    database_setup["dbname"]
-)
+database_path = DATABASE_URL
 
 db = SQLAlchemy()
 
 
-def setup_db(app, database_path=database_path):
+def setup_db(app, database_path=DATABASE_URL):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
-    db.drop_all()
     db.create_all()
 
 
