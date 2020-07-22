@@ -44,27 +44,27 @@ def db_init():
         release_date=date.today()
     )
 
-    new_performance = Performance.insert().values(
-        Movie_id=new_movie.id,
-        Actor_id=new_actor.id,
-        actor_fee=750.00
-    )
+    # new_performance = Performance.insert().values(
+    #     Movie_id=new_movie.id,
+    #     Actor_id=new_actor.id,
+    #     actor_fee=750.00
+    # )
 
     new_actor.insert()
     new_movie.insert()
-    db.session.execute(new_performance)
-    db.session.commit()
+    # db.session.execute(new_performance)
+    # db.session.commit()
 
 
-# ---------------------------------------------------------------------------- #
-# Performance Many-to-Many Relationship 									   #
-# ---------------------------------------------------------------------------- #
-
-Performance = db.Table('Performance', db.Model.metadata,
-                       db.Column('Movie_id', db.Integer, db.ForeignKey('movies.id')),
-                       db.Column('Actor_id', db.Integer, db.ForeignKey('actors.id')),
-                       db.Column('actor_fee', db.Float)
-                       )
+# # ---------------------------------------------------------------------------- #
+# # Performance Many-to-Many Relationship 									   #
+# # ---------------------------------------------------------------------------- #
+#
+# Performance = db.Table('Performance', db.Model.metadata,
+#                        db.Column('Movie_id', db.Integer, db.ForeignKey('movies.id')),
+#                        db.Column('Actor_id', db.Integer, db.ForeignKey('actors.id')),
+#                        db.Column('actor_fee', db.Float)
+#                        )
 
 
 # ---------------------------------------------------------------------------- #
@@ -114,7 +114,7 @@ class Movie(db.Model):
     id = Column(Integer, primary_key=True)
     title = Column(String)
     release_date = Column(Date)
-    actors = db.relationship('Actor', secondary=Performance, backref=db.backref('performances', lazy='joined'))
+    # actors = db.relationship('Actor', secondary=Performance, backref=db.backref('performances', lazy='joined'))
 
     def __init__(self, title, release_date):
         self.title = title

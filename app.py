@@ -15,7 +15,7 @@ from models import (
     db_drop_and_create_all,
     Actor,
     Movie,
-    Performance
+    # Performance
 )
 from config import PAGINATION
 
