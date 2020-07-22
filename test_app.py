@@ -186,6 +186,35 @@ class AgencyTestCase(unittest.TestCase):
         self.assertFalse(data['success'])
         self.assertEqual(data['message'], 'resource not found')
 
+    # ----------------------------------------------------------------------------#
+    # Tests for /movies POST
+    # ----------------------------------------------------------------------------#
+
+    def test_create_new_movie(self):
+        json_create_movie = {
+            'title': 'My Movie',
+            'release_date': date.today()
+        }
+
+        res = self.client().post('/movies', json=json_create_movie, headers=executive_producer_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(data['success'])
+        self.assertTrue(data['created'] is not None)
+
+    def test_error_422_create_new_movie(self):
+        json_create_movie_without_name = {
+            'release_date': date.today()
+        }
+
+        res = self.client().post('/movies', json=json_create_movie_without_name, headers=executive_producer_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['message'], 'unprocessable')
+
 
 if __name__ == "__main__":
     unittest.main()
